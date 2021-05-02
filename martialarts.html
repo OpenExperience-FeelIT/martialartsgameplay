@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <script src="martialarts.js" charset="utf-8"></script>
+    <title></title>
+  </head>
+  <body>
+<!--
+<img src="images/idle.png" alt="This is the pic" id="martialarts">
+-->
+
+<p>hello! No problemS</p>
+
+<button type="button" id="kick" style="height:50px; width:50px;" onclick="animate("kick");">Kick</button>
+<button type="button" id="punch" style="height:50px; width:50px;" onclick="animate("punch")">Punch</button>
+<canvas id="myCanvas" width="1500" height="1500"
+style="border:1px solid #000000;">
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+let imagesSrcPath = {idle:[], kick:[], punch:[]};
+let images = {idle:[], kick:[], punch:[] };
+let queued = ["idle", "kick", "punch"];
+let selected = "idle";
+//function loaddata(Image img) {ctx.drawImage(img, 0, 0)};
+
+
+document.getElementById("kick").onclick = function(){
+  queued.push("kick");
+selected = "idle";
+  //  animate("kick");
+  //  aux();
+    };
+
+    document.getElementById("punch").onclick = function(){
+        queued.push("punch");
+        //  animate("punch");
+          //  animate("idle");
+        };
+
+let loadImage = (src) => {
+  var myImg = new Image();
+  myImg.src = src;
+  myImg.onload = function(){
+    ctx.drawImage(myImg,0,0);
+//animate(ctx, images)
+  };
+};
+
+let imagePath = (frameNumber, animation) => {return "images/"+ animation + "/"+(frameNumber) + ".png"};
+let frames = {
+  idle:[1,2,3,4,5,6,7,8],
+  kick:[1,2,3,4,5,6,7],
+  punch:[1,2,3,4,5,6,7]
+}
+
+function loadImages()
+{
+  let imagesToload = 0;
+  ["idle", "kick", "punch"].forEach((animation) =>
+  {
+    let animationFrames = frames[animation];
+    imagesToload += imagesToload + animationFrames.length;
+    animationFrames.forEach((frameNumber) => {
+      let path = imagePath(frameNumber, animation);
+      imagesSrcPath[animation].push(path);  // consider the change over here if needed
+    });
+        /*images[frameNumber-1] = image;
+            imagesToload = imagesToload - 1;
+            if(imagesToload === 0)
+            {
+              loadImage(imagesSrcPath[1]);
+            }
+            */
+  });
+};
+let aux = () => {
+  let selectedAnime;
+  if(queued.length === 0){selectedAnime = "idle";}
+  else {
+    selectedAnime = queued.shift();
+  }
+  animate(selectedAnime, aux);
+}
+function animate(animation)
+{
+  imagesSrcPath[animation].forEach((imgpath, index) => {
+setTimeout(()=>{loadImage(imgpath);
+ctx.clearRect(0,0, 1500, 1500);}, index*100);
+  });
+
+  aux();
+}
+/*
+function auxy() {
+  if(queued.length === 0)
+  {
+    selected = "idle";
+  }else{selected = queued.shift();}
+  animate();
+}
+*/
+document.addEventListener("keyup", (event)=>{const key = event.key;
+if(key === "ArrowLeft")
+{
+  queued.push("kick");
+}else if (key === "ArrowRight") {
+queued.push("punch");  
+}
+
+})
+loadImages();
+
+  animate(selected);
+//animate("kick");
+//animate("punch");
+</script>
+
+</canvas>
+  </body>
+</html>
